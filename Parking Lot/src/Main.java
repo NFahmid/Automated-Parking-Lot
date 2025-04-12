@@ -58,10 +58,9 @@ public class Main {
                         String regNumber = parts[1];
                         String color = parts[2];
                         Car car = new Car(regNumber, color);
-                        int slotNumber = parkingLot.parkCar(car);
-                        if (slotNumber != -1) {
-                            System.out.println("Allocated slot number: " + slotNumber);
-                            Ticket ticket = new Ticket(slotNumber, car);
+                        Ticket ticket = parkingLot.parkCar(car);
+                        if (ticket != null) {
+                            System.out.println("Allocated slot number: " + ticket.getSlotNumber());
                         } else {
                             System.out.println("Sorry, parking lot is full");
                         }

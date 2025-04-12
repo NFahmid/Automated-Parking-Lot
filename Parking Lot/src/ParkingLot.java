@@ -2,28 +2,35 @@ import java.util.*;
 
 public class ParkingLot {
     private List<Slot> slots;
+    private List<Ticket> tickets;
 
     public void initialize(int n) {
         slots = new ArrayList<>();
+        tickets = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             slots.add(new Slot(i));
         }
     }
 
-    public int parkCar(Car car) {
+    public Ticket parkCar(Car car) {
+        // Find the nearest available slot (slots are already ordered by slot number)
         for (Slot slot : slots) {
             if (!slot.isOccupied()) {
                 slot.assignCar(car);
-                return slot.getSlotNumber();
+                Ticket ticket = new Ticket(slot.getSlotNumber(), car);
+                tickets.add(ticket);
+                return ticket;
             }
         }
-        return -1; 
+        return null; // No available slot found
     }
 
     public boolean leaveSlot(int slotNumber) {
         if (slotNumber >= 1 && slotNumber <= slots.size()) {
             Slot slot = slots.get(slotNumber - 1);
             if (slot.isOccupied()) {
+                // Remove the ticket associated with this slot
+                tickets.removeIf(ticket -> ticket.getSlotNumber() == slotNumber);
                 slot.removeCar();
                 return true;
             }
