@@ -67,6 +67,6 @@ public class ParkingLot {
                 return slot.getSlotNumber();
             }
         }
-        return -1; // not found
+        return -1;
     }
 }
