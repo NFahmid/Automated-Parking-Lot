@@ -13,7 +13,6 @@ public class ParkingLot {
     }
 
     public Ticket parkCar(Car car) {
-        // Find the nearest available slot (slots are already ordered by slot number)
         for (Slot slot : slots) {
             if (!slot.isOccupied()) {
                 slot.assignCar(car);
@@ -22,14 +21,13 @@ public class ParkingLot {
                 return ticket;
             }
         }
-        return null; // No available slot found
+        return null;
     }
 
     public boolean leaveSlot(int slotNumber) {
         if (slotNumber >= 1 && slotNumber <= slots.size()) {
             Slot slot = slots.get(slotNumber - 1);
             if (slot.isOccupied()) {
-                // Remove the ticket associated with this slot
                 tickets.removeIf(ticket -> ticket.getSlotNumber() == slotNumber);
                 slot.removeCar();
                 return true;

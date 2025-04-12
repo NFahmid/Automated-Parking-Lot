@@ -1,14 +1,21 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Default implementation of the SlotManager interface.
- */
+
 public class DefaultSlotManager implements SlotManager {
     private List<Slot> slots;
-    
-    public DefaultSlotManager() {
+    private static DefaultSlotManager instance;
+
+    private DefaultSlotManager() {
         this.slots = new ArrayList<>();
+    }
+
+
+    public static DefaultSlotManager getInstance() {
+        if (instance == null) {
+            instance = new DefaultSlotManager();
+        }
+        return instance;
     }
     
     @Override

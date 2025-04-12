@@ -1,18 +1,12 @@
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Main class that serves as the entry point for the Parking Lot application.
- * This class follows the Dependency Inversion Principle by using interfaces instead of concrete classes.
- */
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        
-        // Create dependencies using dependency injection
-        SlotManager slotManager = new DefaultSlotManager();
+        SlotManager slotManager = DefaultSlotManager.getInstance();
         ParkingService parkingService = new ParkingLotImpl(slotManager);
-        SearchService searchService = (SearchService) parkingService; // Safe cast since ParkingLotImpl implements both interfaces
+        SearchService searchService = (SearchService) parkingService;
         boolean isRunning = true;
         boolean isInitialized = false;
 

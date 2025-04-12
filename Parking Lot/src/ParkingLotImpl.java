@@ -1,20 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Implementation of the ParkingService and SearchService interfaces.
- * This class follows the Dependency Inversion Principle by depending on abstractions.
- */
+
 public class ParkingLotImpl implements ParkingService, SearchService {
     private final SlotManager slotManager;
     private List<Ticket> tickets;
-    
-    /**
-     * Constructor that takes a SlotManager dependency.
-     * This follows the Dependency Inversion Principle by depending on an abstraction.
-     * 
-     * @param slotManager the slot manager to use
-     */
+
     public ParkingLotImpl(SlotManager slotManager) {
         this.slotManager = slotManager;
         this.tickets = new ArrayList<>();
@@ -30,20 +21,18 @@ public class ParkingLotImpl implements ParkingService, SearchService {
     public Ticket parkVehicle(Vehicle vehicle) {
         Slot slot = slotManager.findNearestAvailableSlot();
         if (slot != null) {
-            // Now we can use the Vehicle interface directly without casting
             slot.assignVehicle(vehicle);
             Ticket ticket = new Ticket(slot.getSlotNumber(), vehicle);
             tickets.add(ticket);
             return ticket;
         }
-        return null; // No available slot found
+        return null;
     }
     
     @Override
     public boolean freeSlot(int slotNumber) {
         Slot slot = slotManager.getSlotByNumber(slotNumber);
         if (slot != null && slot.isOccupied()) {
-            // Remove the ticket associated with this slot
             tickets.removeIf(ticket -> ticket.getSlotNumber() == slotNumber);
             slot.removeVehicle();
             return true;
