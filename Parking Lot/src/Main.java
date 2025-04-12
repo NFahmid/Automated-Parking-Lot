@@ -1,10 +1,18 @@
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Main class that serves as the entry point for the Parking Lot application.
+ * This class follows the Dependency Inversion Principle by using interfaces instead of concrete classes.
+ */
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ParkingLot parkingLot = new ParkingLot();
+        
+        // Create dependencies using dependency injection
+        SlotManager slotManager = new DefaultSlotManager();
+        ParkingService parkingService = new ParkingLotImpl(slotManager);
+        SearchService searchService = (SearchService) parkingService; // Safe cast since ParkingLotImpl implements both interfaces
         boolean isRunning = true;
         boolean isInitialized = false;
 
@@ -37,7 +45,7 @@ public class Main {
                         }
                         try {
                             int size = Integer.parseInt(parts[1]);
-                            parkingLot.initialize(size);
+                            parkingService.initialize(size);
                             System.out.println("Created a parking lot with " + size + " slots");
                             isInitialized = true;
                         } catch (NumberFormatException e) {
@@ -58,7 +66,7 @@ public class Main {
                         String regNumber = parts[1];
                         String color = parts[2];
                         Car car = new Car(regNumber, color);
-                        Ticket ticket = parkingLot.parkCar(car);
+                        Ticket ticket = parkingService.parkVehicle(car);
                         if (ticket != null) {
                             System.out.println("Allocated slot number: " + ticket.getSlotNumber());
                         } else {
@@ -77,7 +85,7 @@ public class Main {
                             break;
                         }
                         int leaveSlot = Integer.parseInt(parts[1]);
-                        boolean success = parkingLot.leaveSlot(leaveSlot);
+                        boolean success = parkingService.freeSlot(leaveSlot);
                         if (success) {
                             System.out.println("Slot number " + leaveSlot + " is free");
                         } else {
@@ -91,7 +99,7 @@ public class Main {
                             System.out.println("Parking lot not initialized. Please use create_parking_lot command first.");
                             break;
                         }
-                        parkingLot.getStatus();
+                        searchService.getStatus();
                         break;
 
                     case "4":
@@ -105,7 +113,7 @@ public class Main {
                             break;
                         }
                         String colorToFind = parts[1];
-                        List<String> regNumbers = parkingLot.findRegNumbersByColor(colorToFind);
+                        List<String> regNumbers = searchService.findRegistrationNumbersByColor(colorToFind);
                         if (regNumbers.isEmpty()) {
                             System.out.println("No cars found with color " + colorToFind);
                         } else {
@@ -124,7 +132,7 @@ public class Main {
                             break;
                         }
                         String colorForSlots = parts[1];
-                        List<Integer> slotNumbers = parkingLot.findSlotNumbersByColor(colorForSlots);
+                        List<Integer> slotNumbers = searchService.findSlotNumbersByColor(colorForSlots);
                         if (slotNumbers.isEmpty()) {
                             System.out.println("No cars found with color " + colorForSlots);
                         } else {
@@ -150,7 +158,7 @@ public class Main {
                             break;
                         }
                         String regNumberToFind = parts[1];
-                        int foundSlot = parkingLot.findSlotByRegNumber(regNumberToFind);
+                        int foundSlot = searchService.findSlotByRegistrationNumber(regNumberToFind);
                         if (foundSlot != -1) {
                             System.out.println(foundSlot);
                         } else {
